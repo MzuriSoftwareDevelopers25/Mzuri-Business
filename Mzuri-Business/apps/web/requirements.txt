@@ -1,0 +1,5 @@
+react
+vite
+react-dom
+axios
+redux
