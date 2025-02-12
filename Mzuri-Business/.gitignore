@@ -1,7 +1,5 @@
 # Ignore Python virtual environments
 backend/venv/
-apps/web/venv/
-apps/mobile/venv/
 
 # Ignore node_modules
 apps/web/node_modules/

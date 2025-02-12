@@ -39,8 +39,6 @@ echo "✅ Added .gitkeep files to all empty directories."
 cat <<EOL > Mzuri-Business/.gitignore
 # Ignore Python virtual environments
 backend/venv/
-apps/web/venv/
-apps/mobile/venv/
 
 # Ignore node_modules
 apps/web/node_modules/
@@ -58,53 +56,20 @@ EOL
 
 echo "✅ Created .gitignore file."
 
-# Create virtual environments with error handling
-echo "🐍 Creating Python Virtual Environments..."
+# Create virtual environment for backend
+echo "🐍 Creating Python Virtual Environment for Backend..."
 python -m venv Mzuri-Business/backend/venv && echo "✅ Backend venv created." || { echo "❌ Failed to create backend venv"; exit 1; }
-python -m venv Mzuri-Business/apps/web/venv && echo "✅ Web venv created." || { echo "❌ Failed to create web venv"; exit 1; }
-python -m venv Mzuri-Business/apps/mobile/venv && echo "✅ Mobile venv created." || { echo "❌ Failed to create mobile venv"; exit 1; }
 
 echo "📄 Creating and Populating Files..."
 
 # Check OS to use correct virtual environment activation path
 if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
     VENV_ACTIVATE_BACKEND="Mzuri-Business/backend/venv/Scripts/activate"
-    VENV_ACTIVATE_WEB="Mzuri-Business/apps/web/venv/Scripts/activate"
-    VENV_ACTIVATE_MOBILE="Mzuri-Business/apps/mobile/venv/Scripts/activate"
 else
     VENV_ACTIVATE_BACKEND="Mzuri-Business/backend/venv/bin/activate"
-    VENV_ACTIVATE_WEB="Mzuri-Business/apps/web/venv/bin/activate"
-    VENV_ACTIVATE_MOBILE="Mzuri-Business/apps/mobile/venv/bin/activate"
 fi
 
-# Create Django settings.py
-cat <<EOL > Mzuri-Business/backend/core/settings.py
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'rest_framework',
-    'corsheaders',
-    'api',
-]
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mzuri_db',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8081",
-]
-EOL
-
-# Create requirements.txt for each part
+# Create backend requirements.txt
 cat <<EOL > Mzuri-Business/backend/requirements.txt
 django
 djangorestframework
@@ -112,20 +77,73 @@ mysqlclient
 corsheaders
 EOL
 
-cat <<EOL > Mzuri-Business/apps/web/requirements.txt
-react
-vite
-react-dom
-axios
-redux
+# Create web package.json
+cat <<EOL > Mzuri-Business/apps/web/package.json
+{
+  "name": "mzuri-web",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0"
+  }
+}
 EOL
 
-cat <<EOL > Mzuri-Business/apps/mobile/requirements.txt
-react-native
-expo
-react-navigation
-axios
-redux
+# Create mobile package.json
+cat <<EOL > Mzuri-Business/apps/mobile/package.json
+{
+  "name": "mzuri-mobile",
+  "version": "1.0.0",
+  "main": "App.tsx",
+  "dependencies": {
+    "expo": "~48.0.0",
+    "react-native": "0.72.0"
+  }
+}
+EOL
+
+# Create web entry point
+cat <<EOL > Mzuri-Business/apps/web/src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './styles/global.css';
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+EOL
+
+# Create mobile entry point
+cat <<EOL > Mzuri-Business/apps/mobile/App.tsx
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Text>Mzuri Business Mobile App</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 EOL
 
 # Create README file
@@ -134,8 +152,8 @@ cat <<EOL > Mzuri-Business/README.md
 ## Setup Instructions
 1. Install dependencies:
    - Backend: \`source $VENV_ACTIVATE_BACKEND && pip install -r Mzuri-Business/backend/requirements.txt\`
-   - Web: \`source $VENV_ACTIVATE_WEB && npm install --prefix Mzuri-Business/apps/web\`
-   - Mobile: \`source $VENV_ACTIVATE_MOBILE && npm install --prefix Mzuri-Business/apps/mobile\`
+   - Web: \`cd Mzuri-Business/apps/web && npm install\`
+   - Mobile: \`cd Mzuri-Business/apps/mobile && npm install\`
 2. Start backend: \`cd Mzuri-Business/backend && python manage.py runserver\`
 3. Start web app: \`cd Mzuri-Business/apps/web && npm run dev\`
 4. Start mobile app: \`cd Mzuri-Business/apps/mobile && expo start\`
