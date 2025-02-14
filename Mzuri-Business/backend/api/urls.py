@@ -1,6 +1,8 @@
 from django.urls import path
-from . import views  # Import your views
+from .views import RegisterView, LoginView, UserProfileView
 
 urlpatterns = [
-    path('', views.api_home, name='api_home'),  # Define a default API route
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('profile/', UserProfileView.as_view(), name='profile'),
 ]
