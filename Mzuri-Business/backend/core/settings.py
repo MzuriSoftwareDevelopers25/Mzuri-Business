@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
     'corsheaders',
     'api'
 ]
@@ -92,11 +92,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mzuri_db',   # Your database name
-        'USER': 'root',        # Your MySQL username
-        'PASSWORD': 'password', # Your MySQL password
-        'HOST': '127.0.0.1',   # Host (or use 'localhost')
-        'PORT': '3306',        # Default MySQL port
+        'NAME': 'mzuri_db',     # database name
+        'USER': 'mzuri_user',   # MySQL username
+        'PASSWORD': 'password', # MySQL password
+        'HOST': '127.0.0.1',    # Host (or use 'localhost')
+        'PORT': '3306',         # Default MySQL port
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
