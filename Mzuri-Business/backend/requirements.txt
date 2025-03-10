@@ -7,3 +7,4 @@ mysqlclient==2.2.7
 PyJWT==2.10.1
 sqlparse==0.5.3
 tzdata==2025.1
+django-environ==0.11.2  # Or latest version
